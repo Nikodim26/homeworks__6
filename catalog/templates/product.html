@@ -1,0 +1,46 @@
+{% extends 'catalog_base.html' %}
+{% load catalog_tags %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-1 pb-md-1 mx-auto text-center">
+    <h1 class="display-5">SkyStore</h1>
+    <div class="lh-sm mb-0">
+        <p class="lead mb-1">Категория: {{product.category}}</p>
+        <p class="lead mb-1">
+            Продукт: <span class="fw-bold text-primary fs-5">{{product.name}}</span>
+        </p>
+        <p class="mb-0">
+            Разработан: {{product.created_at}} <span class="ms-3">Изменен: {{product.updated_at}}</span>
+        </p>
+    </div>
+</div>
+
+
+<div class="container mt-1">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 text-center">
+            <h5 class="text-dark mb-1">{{product.price}}$</h5>
+
+            <div class="mb-4">
+                <img src="{{ product.image | media_filter }}" alt="Иллюстрация товара"
+                     class="rounded img-with-border" width="350" height="246">
+            </div>
+
+            <p> {{product.description}}</p>
+            {% if product.owner_id == user.id or perms.catalog.can_unpublish_product %}
+                <a class="p-2 btn btn-outline-warning btn-sm"
+                   href="{% url 'catalog:product_edit' pk=product.pk %}">
+                    Изменить
+                </a>
+            {% endif %}
+
+            {% if product.owner_id == user.id or perms.catalog.delete_product %}
+                <a class="p-2 btn btn-outline-danger btn-sm"
+                   href="{% url 'catalog:product_delete' pk=product.pk %}">
+                    Удалить
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

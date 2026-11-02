@@ -1,0 +1,88 @@
+[
+{
+    "model": "users.user",
+    "pk": 46,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$WNWXjcXOyrP3WBHyCmc27i$hQ3VdWaCMUXIWmOm80oyxLrTKUUJdxiET82JiIr28/8=",
+        "last_login": "2026-11-01T10:45:33.567Z",
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-10-27T17:49:29Z",
+        "email": "Trus@yandex.ru",
+        "avatar": "users/image/трус_qosJwWn.png",
+        "phone_number": "+7911835510",
+        "country": "Россия",
+        "token": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 47,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$pRFVXEsiGrhdoVmRH2RUdl$cJeFSJavrJgeHBh2oi1ZuAvE7PO581UMqajfH2MpmMQ=",
+        "last_login": "2026-11-01T10:42:33.919Z",
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-10-27T17:50:25Z",
+        "email": "Balbes@mail.ru",
+        "avatar": "users/image/балбес_25epvBp.png",
+        "phone_number": "+79118355920",
+        "country": "Россия",
+        "token": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 48,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$duaCwSDlRVn70ml9tcXQDL$ajE5IvJgf1v5jGkwHyOuJrJMgZLrEScIcpYEUvDWqbM=",
+        "last_login": "2026-11-01T10:43:05.989Z",
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-10-27T17:51:26Z",
+        "email": "Byvaliy@gmail.com",
+        "avatar": "users/image/бывалый_REMS7Qr.png",
+        "phone_number": "+79118355930",
+        "country": "Россия",
+        "token": null,
+        "groups": [
+            3
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 51,
+    "fields": {
+        "password": "pbkdf2_sha256$1500000$h7P9dLsC1KVuZq0fqNhGzT$isRDeUz9sbgkd7Nq2PhkBQ8LJuvGqX5Sj1/lbEHOzNk=",
+        "last_login": "2026-11-01T10:41:27.922Z",
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-10-28T16:17:23.164Z",
+        "email": "lr1975@yandex.ru",
+        "avatar": "users/image/avatar_YYLzdDy.jpg",
+        "phone_number": "+79118355919",
+        "country": "Россия",
+        "token": "",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

@@ -1,0 +1,101 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from catalog.forms import ProductForm
+from catalog.models import Product
+
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+
+class ContactsView(TemplateView):
+    template_name = 'contacts.html'
+
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    model = Product
+    template_name = 'product.html'
+    context_object_name = 'product'
+    pk_url_kwarg = 'pk'
+
+
+class CatalogueView(ListView):
+    model = Product
+    template_name = 'catalogue.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.objects.filter(publication=True)
+
+
+# CUD
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog_create_update_form.html'
+    success_url = reverse_lazy("catalog:catalogue")
+    context_object_name = 'product'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['verbose_name'] = 'Опубликовать'
+        return kwargs
+
+    def form_valid(self, form):
+        product = form.save(commit=False)
+        product.owner = self.request.user
+        product.save()
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog_create_update_form.html'
+    context_object_name = 'product'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        kwargs['verbose_name'] = 'Опубликован'
+        return kwargs
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        is_owner = self.object.owner_id == request.user.id
+        is_moderator = request.user.has_perm("catalog.can_unpublish_product")
+
+        if not (is_owner or is_moderator or request.user.is_superuser):
+            return render(request, 'permission_denied.html', {
+                'message': 'Удалять продукт может только владелец или модератор.',
+                'error': 'Ошибка 403 Forbidden («Запрещено»)'
+
+            })
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    model = Product
+    template_name = 'catalog_delete_form.html'
+    success_url = reverse_lazy("catalog:catalogue")
+    context_object_name = 'product'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        is_owner = self.object.owner_id == request.user.id
+        is_moderator = request.user.has_perm("catalog.delete_product")
+
+        if not (is_owner or is_moderator or request.user.is_superuser):
+            return render(request, 'permission_denied.html', {
+                'message': 'Удалять продукт может только владелец или модератор.',
+                'error': 'Ошибка 403 Forbidden («Запрещено»)'
+            })
+
+        return super().dispatch(request, *args, **kwargs)
