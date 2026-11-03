@@ -4,7 +4,8 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm
-from catalog.models import Product
+from catalog.models import Product, Category
+from catalog.services import ProductService
 
 
 class HomeView(TemplateView):
@@ -13,6 +14,17 @@ class HomeView(TemplateView):
 
 class ContactsView(TemplateView):
     template_name = 'contacts.html'
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'aaa.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products_list'] = ProductService.get_products_list()
+        return context
+
+
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -29,6 +41,11 @@ class CatalogueView(ListView):
 
     def get_queryset(self):
         return Product.objects.filter(publication=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = ProductService.get_categories()
+        return context
 
 
 # CUD
