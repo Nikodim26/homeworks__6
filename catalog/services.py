@@ -1,4 +1,4 @@
-from catalog.models import Category
+from catalog.models import Category, Product
 
 
 class ProductService:
@@ -8,5 +8,5 @@ class ProductService:
         return Category.objects.all()
 
     @staticmethod
-    def get_products_list():
-        return ['a','b','c']
+    def get_products_list(pk):
+        return Product.objects.filter(category_id=pk)

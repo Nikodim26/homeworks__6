@@ -14,7 +14,7 @@ class Product(models.Model):
     owner=models.ForeignKey('users.User', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.name} {self.price}'
+        return f'"{self.name}" — {self.price:.2f} $'
 
     def get_absolute_url(self):
         return reverse('catalog:product', kwargs={'pk': self.pk})

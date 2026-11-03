@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -15,16 +15,14 @@ class HomeView(TemplateView):
 class ContactsView(TemplateView):
     template_name = 'contacts.html'
 
-class ProductListView(ListView):
-    model = Product
-    template_name = 'aaa.html'
+class ProductListView(TemplateView):
+    template_name = 'list_of_products_of_a_certain_category.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products_list'] = ProductService.get_products_list()
+        context['products_list'] = ProductService.get_products_list(self.kwargs['category_pk'])
+        context['category'] = get_object_or_404(Category, pk=self.kwargs['category_pk'])
         return context
-
-
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):

@@ -18,19 +18,18 @@
         <div>
             <a class="btn btn-primary" href="{% url 'catalog:catalogue' %}">Каталог</a>
 
-            {% if request.path == '/catalogue/' %}
-            <a class="btn btn-primary" href="{% url 'catalog:product_create' %}">Новый продукт</a>
-
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false"> Категория продуктов </button>
                 <ul class="dropdown-menu">
                     {% for category in categories %}
-                        <li><a class="dropdown-item" href="{% url 'catalog:product_list' %}">{{ category }}</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catalog:product_list' category.pk %}">{{ category }}</a></li>
                     {% endfor %}
                 </ul>
 
-
+            {% if request.path == '/catalogue/' %}
+                <a class="btn btn-primary" href="{% url 'catalog:product_create' %}">Новый продукт</a>
             {% endif %}
+
         </div>
         <form action="{% url 'users:logout' %}" method="post">
             {% csrf_token %}
