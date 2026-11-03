@@ -11,7 +11,7 @@ class Command(BaseCommand):
         if not data:
             self.stdout.write(self.style.WARNING('Данные не найдены в кеше, выполняем вычисления...'))
             data = 'some expensive computation'
-            cache.set('my_key', data, 60 * 15)  # Кешируем на 15 минут
+            cache.set('my_key', data, 60 * 5)  # Кешируем на 15 минут
         else:
             self.stdout.write(self.style.SUCCESS('Данные получены из кеша!'))
 
