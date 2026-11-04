@@ -22,6 +22,7 @@ class ProductListView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['products_list'] = ProductService.get_products_list(self.kwargs['category_pk'])
         context['category'] = get_object_or_404(Category, pk=self.kwargs['category_pk'])
+        context['categories'] = ProductService.get_categories()
         return context
 
 
