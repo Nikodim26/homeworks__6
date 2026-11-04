@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 
 from catalog.forms import ProductForm
 from catalog.models import Product, Category
-from catalog.services import get_products_from_cache
+from catalog.services import get_products_by_category, get_products_from_cache
 
 
 class HomeView(TemplateView):
@@ -16,13 +16,18 @@ class ContactsView(TemplateView):
     template_name = 'contacts.html'
 
 class ProductListView(TemplateView):
-    template_name = 'list_of_products_of_a_certain_category.html'
+    template_name = "list_of_products_of_a_certain_category.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products_list'] = Product.objects.filter(category_id=kwargs['category_pk'])
-        context['categories'] = Category.objects.all()
-        context['category'] = get_object_or_404(Category, pk=self.kwargs['category_pk'])
+        category_id = kwargs["category_pk"]
+
+        context["category"] = get_object_or_404(
+            Category,
+            pk=category_id,
+        )
+        context["products_list"] = get_products_by_category(category_id)
+        context["categories"] = Category.objects.all()
         return context
 
 
@@ -46,7 +51,6 @@ class CatalogueView(ListView):
         context['categories'] = Category.objects.all()
         return context
 
-
 # CUD
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -65,9 +69,6 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         product.owner = self.request.user
         product.save()
         return super().form_valid(form)
-
-
-
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
