@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -66,11 +67,20 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+
+
+
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog_create_update_form.html'
     context_object_name = 'product'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        cache.clear()
+        return response
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -94,6 +104,10 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+
+
+
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
