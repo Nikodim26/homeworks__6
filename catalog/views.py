@@ -5,12 +5,11 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 
 from catalog.forms import ProductForm
 from catalog.models import Product, Category
-from catalog.services import ProductService
+from catalog.services import get_products_from_cache
 
 
 class HomeView(TemplateView):
     template_name = 'home.html'
-
 
 class ContactsView(TemplateView):
     template_name = 'contacts.html'
@@ -20,9 +19,9 @@ class ProductListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products_list'] = ProductService.get_products_list(self.kwargs['category_pk'])
+        context['products_list'] = Product.objects.filter(category_id=kwargs['category_pk'])
+        context['categories'] = Category.objects.all()
         context['category'] = get_object_or_404(Category, pk=self.kwargs['category_pk'])
-        context['categories'] = ProductService.get_categories()
         return context
 
 
@@ -39,11 +38,11 @@ class CatalogueView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(publication=True)
+        return get_products_from_cache()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = ProductService.get_categories()
+        context['categories'] = Category.objects.all()
         return context
 
 

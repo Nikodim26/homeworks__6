@@ -1,12 +1,15 @@
-from catalog.models import Category, Product
+from django.core.cache import cache
+
+from catalog.models import Product
+from config.settings import CACHE_TIMEOUT
 
 
-class ProductService:
+def get_products_from_cache():
+    products = cache.get("products_list")
 
-    @staticmethod
-    def get_categories():
-        return Category.objects.all()
+    if products:
+        return products
+    products=Product.objects.filter(publication=True)
+    cache.set("products_list", products, CACHE_TIMEOUT)
+    return products
 
-    @staticmethod
-    def get_products_list(pk):
-        return Product.objects.filter(category_id=pk)

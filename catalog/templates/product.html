@@ -25,7 +25,7 @@
                      class="rounded img-with-border" width="350" height="246">
             </div>
 
-            <p> {{product.description}}</p>
+            <p class="text-justify"> {{product.description}}</p>
             {% if product.owner_id == user.id or perms.catalog.can_unpublish_product %}
                 <a class="p-2 btn btn-outline-warning btn-sm"
                    href="{% url 'catalog:product_edit' pk=product.pk %}">
