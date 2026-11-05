@@ -1,18 +1,34 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.core.cache import cache
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm
-from catalog.models import Product
+from catalog.models import Product, Category
+from catalog.services import get_products_by_category, get_products_from_cache
 
 
 class HomeView(TemplateView):
     template_name = 'home.html'
 
-
 class ContactsView(TemplateView):
     template_name = 'contacts.html'
+
+class ProductListView(TemplateView):
+    template_name = "list_of_products_of_a_certain_category.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = kwargs["category_pk"]
+
+        context["category"] = get_object_or_404(
+            Category,
+            pk=category_id,
+        )
+        context["products_list"] = get_products_by_category(category_id)
+        context["categories"] = Category.objects.all()
+        return context
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -28,8 +44,12 @@ class CatalogueView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(publication=True)
+        return get_products_from_cache()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 # CUD
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -57,6 +77,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'catalog_create_update_form.html'
     context_object_name = 'product'
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        cache.clear()
+        return response
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
@@ -79,6 +105,10 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
+
+
+
+
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
